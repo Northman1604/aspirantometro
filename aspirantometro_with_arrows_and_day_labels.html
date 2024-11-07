@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aspirantômetro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f3f4f6;
+        }
+        #contador-container {
+            text-align: center;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+        }
+        #contador-container h1 {
+            font-size: 2.5rem;
+            color: red;
+            margin: 0;
+        }
+        #subtitulo {
+            font-size: 1.8rem;
+            color: black;
+            margin: 5px 0 0 0;
+        }
+        #subtitulo-cbmsc {
+            font-size: 1.5rem;
+            color: black;
+            margin: 2px 0 15px 0;
+        }
+        #contador {
+            font-size: 1.8rem;
+            margin: 10px 0;
+            color: #555;
+        }
+        #porcentagem {
+            font-size: 1.2rem;
+            color: #555;
+            margin-top: 10px;
+        }
+        #barra-progresso {
+            width: 90%;
+            margin: 0 auto;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 15px;
+            position: relative;
+            transform: skewX(-10deg);
+        }
+        #barra-preenchimento {
+            height: 20px;
+            background: linear-gradient(to right, red, green);
+            width: 0;
+            transition: width 0.5s ease;
+        }
+        /* Flechas para os dias */
+        .arrow {
+            position: absolute;
+            font-size: 1rem;
+            color: black;
+            display: flex;
+            align-items: center;
+            transform: translateY(25px); /* Alinha abaixo da barra de progresso */
+        }
+        .arrow::before {
+            content: "↓";
+            margin-right: 5px;
+        }
+        /* Marcadores translúcidos com 80% de transparência */
+        #marker-1, #marker-2 {
+            position: absolute;
+            top: 0;
+            height: 20px;
+            background-color: rgba(173, 216, 230, 0.8);
+            transform: skewX(10deg);
+        }
+        #marker-1 {
+            left: calc((502 / 781) * 100%);
+            width: calc(((532 - 502) / 781) * 100%);
+        }
+        #marker-2 {
+            left: calc((707 / 781) * 100%);
+            width: calc(((737 - 707) / 781) * 100%);
+        }
+        .estrela {
+            position: absolute;
+            right: 3%;
+            top: 65%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: gold;
+        }
+        /* Estilo da legenda */
+        #legenda-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 1.2rem;
+            color: black;
+        }
+        #legenda-square {
+            width: 20px;
+            height: 20px;
+            background-color: rgba(173, 216, 230, 0.8);
+            margin-right: 10px;
+        }
+        #legenda-text {
+            font-size: 1.2rem;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div id="contador-container">
+        <h1>ASPIRANTÔMETRO</h1>
+        <div id="subtitulo">2025</div>
+        <div id="subtitulo-cbmsc">CBMSC</div>
+        <div id="contador"></div>
+        <div id="barra-progresso">
+            <div id="marker-1"></div>
+            <div id="marker-2"></div>
+            <div id="barra-preenchimento"></div>
+            <div id="day-arrow" class="arrow"></div> <!-- Indicador de dia atual -->
+            <div id="final-arrow" class="arrow" style="right: 0;">781</div> <!-- Indicador de último dia -->
+        </div>
+        <div id="porcentagem"></div>
+        <span class="estrela">⭐</span>
+        
+        <!-- Legenda -->
+        <div id="legenda-container">
+            <div id="legenda-square"></div>
+            <div id="legenda-text">Férias</div>
+        </div>
+    </div>
+
+    <script>
+        function atualizarAspirantometro() {
+            const dataInicial = new Date("2023-08-07");
+            const dataFinal = new Date("2025-09-26");
+            const hoje = new Date();
+
+            // Calcula o número total de dias e o dia atual
+            const totalDias = Math.ceil((dataFinal - dataInicial) / (1000 * 60 * 60 * 24));
+            const diasPassados = Math.ceil((hoje - dataInicial) / (1000 * 60 * 60 * 24));
+            const porcentagem = ((diasPassados / totalDias) * 100).toFixed(2);
+
+            // Exibe o dia atual e a porcentagem de progresso com alternância de cor
+            document.getElementById("contador").textContent = `Dia ${diasPassados} de ${totalDias}`;
+            document.getElementById("contador").style.color = diasPassados % 2 === 0 ? "#333" : "#777";
+            document.getElementById("porcentagem").textContent = `Progresso: ${porcentagem}%`;
+
+            // Atualiza a largura da barra de progresso
+            const barraPreenchimento = document.getElementById("barra-preenchimento");
+            barraPreenchimento.style.width = `${porcentagem}%`;
+
+            // Atualiza a posição e conteúdo da flecha do dia atual
+            const dayArrow = document.getElementById("day-arrow");
+            dayArrow.textContent = `↓ Dia ${diasPassados}`;
+            dayArrow.style.left = `calc(${porcentagem}% - 10px)`;  // Posiciona ao final do preenchimento
+        }
+
+        atualizarAspirantometro();
+        setInterval(atualizarAspirantometro, 86400000); // Atualiza a cada 24 horas
+    </script>
+</body>
+</html>
